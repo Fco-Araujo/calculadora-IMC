@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+        }
+
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(240, 237, 237);
+        }
+
+        h1{
+            font-size: 30px
+        }
+
+        #form{
+            display: flex;
+            flex-flow: column;
+            gap:5px
+        }
+
+        .form-grupo{
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+            gap: 10px;
+        }
+
+        .container{
+            display: flex;
+            flex-direction: column;
+            width: 420px;
+            background-color: #fff;
+            padding: 50px;
+            gap:20px;
+            box-shadow: 10px 10px 30px #0f0f0f21;
+            border-radius: 20px;
+            flex-wrap: wrap;
+            align-content: space-around;
+            align-items: center;
+        }
+
+        .campos{
+            font-size: 18px;
+            width: 300px;
+        }
+
+        .btn{
+            margin-top: 20px;
+            width: 300px;
+            padding: 5px;
+            background-color: #4bb748;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .btn:hover{
+            background-color: #157e43;
+        }
+
+        #mensagemImc{
+            padding: 9px;
+            margin-top: 10px;
+            width: 300px;
+            border-radius: 5px;
+            color: #fff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Calculadora de IMC</h1>
+
+        <form id="form">
+            <div class="form-grupo">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" class="campos">
+                <span class="mensagemErro"></span>
+            </div>
+
+            <div class="form-grupo">
+                <label for="altura">Altura(m):</label>
+                <input type="number" name="altura" id="altura" step="any" class="campos" required>
+            </div>
+
+            <div class="form-grupo">
+                <label for="peso">Peso:</label>
+                <input type="number" name="peso" id="peso" step="any" class="campos" required>
+            </div>
+
+            <button type="submit" class="btn">Enviar</button>
+
+            <span id="mensagemImc"></span>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded",()=>{
+
+            const formulario = document.getElementById("form");
+
+            formulario.addEventListener("submit",(event)=>{
+                event.preventDefault()
+                limparErro()
+
+                if( validarNome()){
+                    mensagemImc(calcularImc())
+                }
+            })
+
+            function validarNome(){
+                const campoNome = document.getElementById("nome")
+                let nomeValido = true
+
+                if(campoNome.value.trim() === ""){
+                    nomeValido = false
+                    mensagemErro()
+                }
+                return nomeValido
+            }
+
+            function mensagemErro (){
+                const elemento = document.querySelectorAll(".mensagemErro");
+                elemento[0].textContent = "Preencha o nome"
+                elemento[0].style.color = "red"
+            }
+
+            function limparErro (){
+                const mensagemErro = document.querySelector(".mensagemErro");
+                mensagemErro.textContent = ""
+            }
+
+            function calcularImc(){
+                let dados = new FormData(formulario);
+
+                for(let [chave, valor] of dados){
+                    console.log(`${chave} : ${valor}`)
+                }
+
+                const peso = dados.get("peso");
+                const altura = dados.get("altura");
+
+                const calculoImc = peso/(altura *altura)
+                return calculoImc.toFixed(2)
+            }
+
+            function mensagemImc(imc){
+                const nome = document.getElementById("nome").value
+                const mensagem = document.getElementById("mensagemImc");
+
+                if(imc < 18.5){
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Baixo peso`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "red"
+                }else if(imc < 25 ){
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Peso normal`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "#4bb748"
+                }else if(imc < 30){
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Sobrepeso`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "red"
+                }else if(imc < 35){
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Obesidade Grau I`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "red"
+                }else if (imc < 40){
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Obesidade Grau II`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "red"
+                }else{
+                    mensagem.textContent = `${nome} seu IMC é ${imc} você está na categoria: Obesidade Grau III
+                    (Grave)`
+                    mensagem.style.display = "inline"
+                    mensagem.style.backgroundColor = "red"
+                }
+            }
+        })
+    </script>
+</body>
+</html>
